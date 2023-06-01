@@ -17,7 +17,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 preparation()
 
 # =[Variabel Global]=============================
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 model = None
 
 # Load model LSTM
@@ -31,6 +31,11 @@ def load_lstm_model():
 def beranda():
     return render_template('index.html')
 
+# [Routing untuk Halaman aplikasi]
+@app.route("/aplikasi")
+def chatbot():
+    return render_template('aplikasi.html')
+
 # [Routing untuk API]
 @app.route("/api/deteksi", methods=['POST'])
 def api_deteksi():
@@ -39,23 +44,27 @@ def api_deteksi():
         input_text = request.form['input_text']
         
         # Lakukan preprocessing pada input_text jika diperlukan
+        prediksi_input = text_preprocessing_process(prediksi_input)
         
         # Lakukan prediksi menggunakan model LSTM
         prediksi = lstm_predict(input_text)
         
+        if prediksi == 0:
+            hasil_prediksi = "berhasil"
+        else:
+            hasil_prediksi = "pertanyaan tidak dimengerti"
+            
         # Return hasil prediksi dengan format JSON
-        return jsonify({"prediksi": prediksi})
+        return jsonify({
+            "data": hasil_prediksi,
+        })
+        #return jsonify({"prediksi": prediksi})
 
 # Prediksi menggunakan model LSTM
 def lstm_predict(input_text):
-    # Lakukan transformasi pada input_text jika diperlukan
-    
-    # Lakukan prediksi menggunakan model LSTM
-    # Contoh:
-    # input_data = transform_input_text(input_text)
-    # prediksi = model.predict(input_data)
-    
-    # Lakukan post-processing pada hasil prediksi jika diperlukan
+    user_input = str(request.args.get('msg'))
+    result = generate_response(user_input)
+    return result
     
     return prediksi
 
