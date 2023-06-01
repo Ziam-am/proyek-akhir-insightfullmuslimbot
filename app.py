@@ -1,8 +1,22 @@
+# =[Modules dan Packages]========================
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 from tensorflow.keras.models import load_model
 from flask_ngrok import run_with_ngrok
 
+import pandas as pd
+import re
+import pickle
+import nltk
+
+from nltk.tokenize import RegexpTokenizer
+from nltk.stem.snowball import SnowballStemmer
+from sklearn.feature_extraction.text import CountVectorizer
+
+# download nltk
+preparation()
+
+# =[Variabel Global]=============================
 app = Flask(__name__)
 model = None
 
